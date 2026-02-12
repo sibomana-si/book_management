@@ -18,19 +18,20 @@ async def read_all_books():
     return BOOKS
 
 
-@app.get("/books/{book_title}")
-async def read_book(book_title: str):
-    for book in BOOKS:
-        if book.get('title') == book_title:
-            return book
-    return {'message': 'Book not found'}
-
-
 @app.get("/books/")
 async def read_category_by_query(category: str):
     books_to_return = []
     for book in BOOKS:
         if book.get('category').casefold() == category.casefold():
+            books_to_return.append(book)
+    return books_to_return
+
+
+@app.get("/books/byauthor/")
+async def read_books_by_author(author: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author.casefold():
             books_to_return.append(book)
     return books_to_return
 
@@ -43,6 +44,14 @@ async def read_author_category_by_query(book_author: str, category: str):
             book.get('category').casefold() == category.casefold():
             books_to_return.append(book)
     return books_to_return
+
+
+@app.get("/books/{book_title}")
+async def read_book(book_title: str):
+    for book in BOOKS:
+        if book.get('title') == book_title:
+            return book
+    return {'message': 'Book not found'}
 
 
 @app.post("/books/create_book/")
@@ -63,5 +72,4 @@ async def delete_book(book_title: str):
         if BOOKS[i].get('title').casefold() == book_title.casefold():
             BOOKS.pop(i)
             break
-
 
